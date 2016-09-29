@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
+     <default>
+        <alcatel>
+            <ordersettings>
+                <cancellabletime>30</cancellabletime>
+                <cancellable_status>processing</cancellable_status>
+                <non_cancellable_status>processing</non_cancellable_status>
+                <fake_status>fraud</fake_status>
+                <fake_cancel_order>30</fake_cancel_order>
+            </ordersettings>
+        </alcatel>
+    </default>
+</config>

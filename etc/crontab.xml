@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="alcatel_order_update" instance="Alcatel\Poc\Model\Ordercron" method="execute">
+            <schedule>*/1 * * * *</schedule>
+        </job> 
+         <job name="alcatel_fake_order" instance="Alcatel\Poc\Model\Fakeordercancel" method="execute">
+            <schedule>*/1 * * * *</schedule>
+        </job>
+       <!--  <job name="order_export" instance="Alcatel\Poc\Controller\Test\Orderexport" method="execute">
+            <schedule>*/1 * * * *</schedule>
+        </job> -->
+    </group>
+</config>
