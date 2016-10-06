@@ -57,8 +57,14 @@ class Manager extends \Magento\Framework\DataObject
         \Magento\Framework\DB\Transaction $transaction,
         \Magento\Framework\App\Config\ValueFactory $configValueFactory,
         \Magento\Sales\Model\Order $order,
+        \Magento\Sales\Model\Order\Payment $Payment,
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
         \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
+        \Magento\Sales\Api\CreditmemoRepositoryInterface $creditmemoRepository,
+        \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory,
+        \Magento\Sales\Model\Order\Invoice $Invoice,
+        \Magento\Sales\Model\Service\CreditmemoService $CreditmemoService,
+        \Magento\Framework\DB\TransactionFactory $TransactionFactory,
         Filesystem $filesystem,
         \Alcatel\Poc\Helper\Data $helper,
         array $data = []
@@ -75,6 +81,13 @@ class Manager extends \Magento\Framework\DataObject
         $this->_configValueFactory = $configValueFactory;
 		$this->_storeId=(int)$this->_storeManager->getStore()->getId();
 		$this->_storeCode=$this->_storeManager->getStore()->getCode();
+
+        $this->creditmemoRepository = $creditmemoRepository;
+        $this->TransactionFactory = $TransactionFactory;
+        $this->payment = $Payment;
+        $this->creditmemoFactory = $creditmemoFactory;
+        $this->CreditmemoService = $CreditmemoService;
+        $this->Invoice = $Invoice;
 
         $this->helper = $helper;
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/alcatelpoc.log');
@@ -180,5 +193,34 @@ class Manager extends \Magento\Framework\DataObject
             'rm' => true  // can delete file after use
         ];
     }	
+
+    public function refund(){
+         $creditmemo = $this->creditmemoRepository->get(000000018);
+         //$creditmemo->setRefundRequested(true)->setOfflineRequested(false); // request to refund online
+            $creditmemo->refund();
+
+        $saveTransaction = $this->TransactionFactory->create();
+        $saveTransaction->addObject($creditmemo);
+        $saveTransaction->addObject($creditmemo->getOrder());
+      //  $saveTransaction->addObject($creditmemo->getInvoice());
+        $saveTransaction->save();
+    }
+
+    public function refund2(){
+        $order = $this->order;
+         $order->load(22);
+      
+         $invoices = $order->getInvoiceCollection();
+         foreach($invoices as $invoice){
+            $invoiceincrementid = $invoice->getIncrementId();
+         }
+
+        $invoiceobj =  $this->Invoice->loadByIncrementId($invoiceincrementid);
+
+        $creditmemo = $this->creditmemoFactory->createByOrder($order);
+        $creditmemo->setInvoice($invoiceobj);
+        $this->CreditmemoService->refund($creditmemo); 
+      
+    }
 	
 }

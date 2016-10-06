@@ -24,8 +24,8 @@ class Ordercron extends \Magento\Framework\App\Action\Action
  
     public function execute()
     {  
-      $this->manager = $this->_objectManager->get('Alcatel\Poc\Model\Ordercron');
-      $response = $this->manager->orderupdate();
+      $this->manager = $this->_objectManager->get('Alcatel\Poc\Model\Manager');
+      $response = $this->manager->refund2();
       echo '<pre>'; print_r($response); exit;
     }    
 }
